@@ -1,5 +1,5 @@
 import requests
-from minsearch import Index
+from minsearch import Index, VectorSearch
 
 
 def load_faq_data():
@@ -28,3 +28,13 @@ def build_index(documents):
     )
     index.fit(documents)
     return index
+
+
+def build_index(X, documents):
+    index = VectorSearch(
+        text_fields=['question', 'section', 'answer'],
+        keyword_fields=['course']
+    )
+    index.fit(X, documents)
+    return index
+
