@@ -30,9 +30,8 @@ def build_index(documents):
     return index
 
 
-def build_index(X, documents):
+def build_vector_index(X, documents):
     index = VectorSearch(
-        text_fields=['question', 'section', 'answer'],
         keyword_fields=['course']
     )
     index.fit(X, documents)
