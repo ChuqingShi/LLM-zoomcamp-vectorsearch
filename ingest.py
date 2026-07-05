@@ -1,5 +1,6 @@
 import requests
-from minsearch import Index, VectorSearch
+from minsearch import VectorSearch
+from sqlitesearch import VectorSearchIndex
 
 
 def load_faq_data():
@@ -21,15 +22,6 @@ def load_faq_data():
     return documents
 
 
-def build_index(documents):
-    index = Index(
-        text_fields=['question', 'section', 'answer'],
-        keyword_fields=['course']
-    )
-    index.fit(documents)
-    return index
-
-
 def build_vector_index(X, documents):
     index = VectorSearch(
         keyword_fields=['course']
@@ -37,3 +29,13 @@ def build_vector_index(X, documents):
     index.fit(X, documents)
     return index
 
+
+def build_sqlite_vector_index(X, documents, db_path="faq_vectors.db"):
+    index = VectorSearchIndex(
+        keyword_fields=['course'],
+        mode="ivf",
+        db_path=db_path,
+    )
+    index.fit(X, documents)
+    index.close()
+    return index
