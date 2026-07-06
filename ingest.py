@@ -39,3 +39,23 @@ def build_sqlite_vector_index(X, documents, db_path="faq_vectors.db"):
     index.fit(X, documents)
     index.close()
     return index
+
+
+def _iter_batches(items, batch_size=32):
+    for i in range(0, len(items), batch_size):
+        print(f"Yielding batch {i // batch_size + 1} of {(len(items) - 1) // batch_size + 1}")
+        yield items[i:i + batch_size]
+        
+
+def iter_faq_batches(batch_size=32):
+    docs_url = "https://datatalks.club/faq/json/courses.json"
+    courses = requests.get(docs_url).json()
+    
+    url_prefix = "https://datatalks.club/faq"
+
+    for course in courses:
+        print("Processing course:", course['course'])
+        course_data = requests.get(f"{url_prefix}{course['path']}").json()
+
+        for batch in _iter_batches(course_data, batch_size):
+            yield batch
